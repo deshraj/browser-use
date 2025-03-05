@@ -2,7 +2,7 @@
 name = "browser-use"
 description = "Make websites accessible for AI agents"
 authors = [{ name = "Gregor Zunic" }]
-version = "0.1.40+deshraj"
+version = "0.1.40"
 readme = "README.md"
 requires-python = ">=3.11,<4.0"
 classifiers = [
@@ -23,7 +23,7 @@ dependencies = [
     "langchain-openai==0.3.1",
     "langchain-anthropic==0.3.3",
     "langchain-ollama==0.2.2",
-    "mem0ai>=0.1.57",
+    "mem0ai>=0.1.63",
     "chromadb>=0.6.3",
 ]
 urls = { "Repository" = "https://github.com/browser-use/browser-use" }

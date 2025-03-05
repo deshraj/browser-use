@@ -307,20 +307,12 @@ class MessageManager:
 
 	def add_user_long_term_memory(self, user_id: str) -> None:
 		"""Add user long term memory of the user to history"""
-		default_config = {
-			"vector_store": {
-				"provider": "chroma",
-				"config": {
-					"collection_name": "test",
-					"path": "/tmp/mem0",
-				}
-			}
-		}
+		default_config = {"vector_store": {"provider": "chroma", "config": {"path": "/tmp/mem0"}}}
 		config = self.settings.memory_config or default_config
 		memory_store = Memory.from_config(config_dict=config)
 		if user_id:
 			memories = memory_store.get_all(user_id=user_id)
-			if len(memories.get('results', [])):
+			if memories.get('results'):
 				memories_str = "\n".join([f'- {m["memory"]}' for m in memories['results']])  # type: ignore
 			msg = HumanMessage(content=f'User\'s long-term memories:\n{memories_str}')
 			self._add_message_with_tokens(msg)
