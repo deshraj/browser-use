@@ -24,23 +24,10 @@ memory.add(messages, user_id="mark")
 # Define the main function
 async def main():
     # Create an Agent instance
-    from browser_use.browser.context import BrowserContextConfig
-    from browser_use.browser.browser import Browser
-    from browser_use.browser.context import BrowserContext
-
-    config = BrowserContextConfig(
-        browser_window_size={'width': 1920, 'height': 1080},
-    )
-
-    browser = Browser()
-    context = BrowserContext(browser=browser, config=config)
-
     agent = Agent(
-        task="Planning a trip to San Francisco. Create a personalized itinerary for me for 3 days.",  # Task for the agent
+        task="Planning a trip to San Francisco. Create a detailed itinerary including food, activities, and accommodations for three days.",  # Task for the agent
         llm=ChatOpenAI(model="gpt-4o-mini"),  # Language model for the agent
         user_id="mark",  # User ID for the agent to retrieve memories
-        browser_context=context,
-
     )
     # Run the agent and get the result
     result = await agent.run()
