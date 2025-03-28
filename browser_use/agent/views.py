@@ -59,6 +59,10 @@ class AgentSettings(BaseModel):
 	planner_llm: Optional[BaseChatModel] = None
 	planner_interval: int = 1  # Run planner every N steps
 
+	# Memory summarization settings
+	enable_memory_summarization: bool = False
+	summarize_every_n_steps: int = 10
+
 
 class AgentState(BaseModel):
 	"""Holds all state information for an Agent"""

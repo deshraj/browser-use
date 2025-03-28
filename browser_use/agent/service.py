@@ -20,6 +20,7 @@ from langchain_core.messages import (
 from pydantic import BaseModel, ValidationError
 
 from browser_use.agent.gif import create_history_gif
+from browser_use.agent.memory_summarizer.service import MemorySummarizer, MemorySummarizerSettings
 from browser_use.agent.message_manager.service import MessageManager, MessageManagerSettings
 from browser_use.agent.message_manager.utils import convert_input_messages, extract_json_from_model_output, save_conversation
 from browser_use.agent.prompts import AgentMessagePrompt, PlannerPrompt, SystemPrompt
@@ -128,6 +129,9 @@ class Agent(Generic[Context]):
 		injected_agent_state: Optional[AgentState] = None,
 		#
 		context: Context | None = None,
+		# Memory summarization settings
+		enable_memory_summarization: bool = False,
+		summarize_every_n_steps: int = 10,
 	):
 		if page_extraction_llm is None:
 			page_extraction_llm = llm
@@ -194,6 +198,18 @@ class Agent(Generic[Context]):
 				available_file_paths=self.settings.available_file_paths,
 			),
 			state=self.state.message_manager_state,
+		)
+
+		# Initialize memory summarizer
+		memory_summarizer_settings = MemorySummarizerSettings(
+			enable_summarization=enable_memory_summarization,
+			summarize_every_n_steps=summarize_every_n_steps,
+		)
+
+		self.memory_summarizer = MemorySummarizer(
+			message_manager=self._message_manager,
+			llm=self.llm,
+			settings=memory_summarizer_settings,
 		)
 
 		# Browser setup
@@ -333,6 +349,10 @@ class Agent(Generic[Context]):
 
 		try:
 			state = await self.browser_context.get_state()
+
+			# summarize memories if needed
+			if self.state.n_steps % self.settings.summarize_every_n_steps == 0:
+				self.memory_summarizer.summarize_memories(self.state.n_steps)
 
 			await self._raise_if_stopped_or_paused()
 
@@ -946,7 +966,9 @@ class Agent(Generic[Context]):
 		response = await self.settings.planner_llm.ainvoke(planner_messages)
 		plan = str(response.content)
 		# if deepseek-reasoner, remove think tags
-		if self.planner_model_name and ('deepseek-r1' in self.planner_model_name or 'deepseek-reasoner' in self.planner_model_name):
+		if self.planner_model_name and (
+			'deepseek-r1' in self.planner_model_name or 'deepseek-reasoner' in self.planner_model_name
+		):
 			plan = self._remove_think_tags(plan)
 		try:
 			plan_json = json.loads(plan)

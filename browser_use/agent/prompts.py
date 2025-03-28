@@ -123,7 +123,7 @@ Interactive elements from top layer of the current page inside the viewport:
 					error = result.error.split('\n')[-1]
 					state_description += f'\nAction error {i + 1}/{len(self.result)}: ...{error}'
 
-		if self.state.screenshot and use_vision == True:
+		if self.state.screenshot and use_vision is True:
 			# Format message for vision model
 			return HumanMessage(
 				content=[
