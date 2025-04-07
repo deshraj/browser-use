@@ -47,7 +47,10 @@ class Memory:
 		self.settings = settings
 		self._memory_config = self.settings.config or {
 			'vector_store': {
-				'provider': 'faiss'
+				'provider': 'faiss',
+				'config': {
+					'embedding_model_dims': 384
+				}
 			},
 			'llm': {
 				'provider': 'langchain',
