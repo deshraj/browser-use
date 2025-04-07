@@ -54,6 +54,12 @@ class Memory:
 				'config': {
 					'model': llm
 				}
+			},
+			'embedder': {
+				'provider': 'huggingface',
+				'config': {
+					'model': 'all-MiniLM-L6-v2'
+				}
 			}
 		}
 		self.mem0 = Mem0Memory.from_config(config_dict=self._memory_config)

@@ -33,7 +33,8 @@ dependencies = [
     "typing-extensions>=4.12.2",
     "psutil>=7.0.0",
     "faiss-cpu>=1.10.0",
-    "mem0ai==0.1.85",
+    "mem0ai==0.1.86",
+    "sentence-transformers>=4.0.2",
 ]
 
 # botocore: only needed for Bedrock Claude boto3 examples/models/bedrock_claude.py 
