@@ -1,15 +1,13 @@
 import asyncio
 import json
+import os
 from typing import List
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
-from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 
 from browser_use import Agent, Browser, BrowserConfig, Controller
+
+assert os.getenv('OPENAI_API_KEY') in [None, ''], 'OPENAI_API_KEY should be set to None for anthropic'
 
 links = [
 	'https://docs.mem0.ai/components/llms/models/litellm',
@@ -66,6 +64,10 @@ Guidelines:
 6. If you visit any page that doesn't have host name docs.mem0.ai, then do not visit it and come back to the page with host name docs.mem0.ai.
 """
 
+from langchain_anthropic import ChatAnthropic
+
+llm = ChatAnthropic(model='claude-3-5-sonnet-20240620')
+
 
 async def main(max_steps=500):
 	config = BrowserConfig(headless=True)
@@ -73,7 +75,7 @@ async def main(max_steps=500):
 
 	agent = Agent(
 		task=task_description,
-		llm=ChatOpenAI(model='gpt-4o-mini'),
+		llm=llm,
 		controller=controller,
 		initial_actions=initial_actions,
 		enable_memory=True,
