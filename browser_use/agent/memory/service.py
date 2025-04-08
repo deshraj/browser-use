@@ -44,9 +44,27 @@ class Memory:
 		settings: MemorySettings,
 	):
 		self.message_manager = message_manager
-		self.llm = llm
 		self.settings = settings
-		self._memory_config = self.settings.config or {'vector_store': {'provider': 'faiss'}}
+		self._memory_config = self.settings.config or {
+			'vector_store': {
+				'provider': 'faiss',
+				'config': {
+					'embedding_model_dims': 384
+				}
+			},
+			'llm': {
+				'provider': 'langchain',
+				'config': {
+					'model': llm
+				}
+			},
+			'embedder': {
+				'provider': 'huggingface',
+				'config': {
+					'model': 'all-MiniLM-L6-v2'
+				}
+			}
+		}
 		self.mem0 = Mem0Memory.from_config(config_dict=self._memory_config)
 
 	@time_execution_sync('--create_procedural_memory')
@@ -108,7 +126,6 @@ class Memory:
 			results = self.mem0.add(
 				messages=parsed_messages,
 				agent_id=self.settings.agent_id,
-				llm=self.llm,
 				memory_type='procedural_memory',
 				metadata={'step': current_step},
 			)
