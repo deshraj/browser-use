@@ -266,7 +266,7 @@ agent = Agent(
     llm=llm,
     memory_config={
         "embedder": {"provider": "openai", "config": {"model": "text-embedding-3-large"}},
-        "llm": llm,
+        "llm": {"provider": "openai", "config": {"model": "gpt-4o-mini"}},
         "vector_store": {"provider": "faiss", "config": {"path": "./chroma_db"}},
     },
 )
@@ -295,7 +295,7 @@ class MemoryConfig(BaseModel):
 agent = Agent(
     task=task_description,
     llm=llm,
-    memory_config=MemoryConfig(llm=llm)
+    memory_config=MemoryConfig(llm=llm).model_dump()
 )
 ```
 
