@@ -40,7 +40,6 @@ class Memory:
 	# Default configuration values as class constants
 	EMBEDDER_CONFIGS = {
 		'ChatOpenAI': {'provider': 'openai', 'config': {'model': 'text-embedding-3-small', 'embedding_dims': 1536}},
-		'AzureChatOpenAI': {'provider': 'azure_openai', 'config': {'model': 'text-embedding-3-small', 'embedding_dims': 1536}},
 		'ChatGoogleGenerativeAI': {'provider': 'gemini', 'config': {'model': 'models/text-embedding-004', 'embedding_dims': 768}},
 		'ChatOllama': {'provider': 'ollama', 'config': {'model': 'nomic-embed-text', 'embedding_dims': 512}},
 		'default': {'provider': 'huggingface', 'config': {'model': 'all-MiniLM-L6-v2', 'embedding_dims': 384}},
@@ -64,7 +63,6 @@ class Memory:
 		llm_class = llm.__class__.__name__
 		if llm_class not in {
 			'ChatOpenAI',
-			'AzureChatOpenAI',
 			'ChatGoogleGenerativeAI',
 			'ChatOllama',
 		}:
@@ -72,7 +70,6 @@ class Memory:
 				from sentence_transformers import SentenceTransformer
 			except ImportError:
 				raise ImportError(f'sentence_transformers is required for managing memory for {llm_class}. Please install it with `pip install sentence-transformers`.')
-		print(f"Inside _get_embedder_config: llm_class={llm_class}")
 		return cls.EMBEDDER_CONFIGS.get(llm_class, cls.EMBEDDER_CONFIGS['default'])
 
 	@classmethod
